@@ -235,6 +235,15 @@ impl<Manager> Matchmaking<Manager> {
         }
     }
 
+    /// Request lobby data, returns true if connection made
+    pub fn request_lobby_data(&self, lobby: LobbyId) -> bool {
+        unsafe {
+            sys::SteamAPI_ISteamMatchmaking_RequestLobbyData(
+                self.mm, lobby.0
+            )
+        }
+    }
+
     /// Returns the number of players in a lobby.
     ///
     /// Useful if you are not currently in the lobby
