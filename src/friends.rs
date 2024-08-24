@@ -92,6 +92,13 @@ impl<Manager> Friends<Manager> {
         }
     }
 
+    pub fn get_friend_persona_name(&self, friend_id: SteamId) -> String {
+        unsafe {
+            let name = CStr::from_ptr(sys::SteamAPI_ISteamFriends_GetFriendPersonaName(self.friends, friend_id.0));
+            name.to_string_lossy().into_owned()
+        }
+    }
+
     pub fn get_friends(&self, flags: FriendFlags) -> Vec<Friend<Manager>> {
         unsafe {
             let count = sys::SteamAPI_ISteamFriends_GetFriendCount(self.friends, flags.bits() as _);
