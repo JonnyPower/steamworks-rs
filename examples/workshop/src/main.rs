@@ -103,17 +103,18 @@ fn delete_item(ugc: &UGC<ClientManager>, published_id: PublishedFileId) {
 
 fn main() {
     // create a client pair
-    let (client, single) = Client::init().expect("Steam is not running or has not been detected");
+    let client = Client::init().expect("Steam is not running or has not been detected");
 
     // create a channel to communicate with the upcoming callback thread
     // this is technically not *needed* but it is cleaner in order to properly exit the thread
     let (tx, rx) = std::sync::mpsc::channel();
     // create a thread for callbacks
     // if you have an active loop (like in a game), you can skip this and just run the callbacks on update
+    let client_for_callback = client.clone();
     let callback_thread = std::thread::spawn(move || {
         loop {
             // run callbacks
-            single.run_callbacks();
+            client_for_callback.run_callbacks();
             std::thread::sleep(std::time::Duration::from_millis(100));
 
             // check if the channel is closed or if there is a message
